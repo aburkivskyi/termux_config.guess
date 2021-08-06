@@ -8,7 +8,8 @@ SCRIPT_DIR="$(cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P)"
 pkgname='config.guess'
 pkgsrc="https://git.savannah.gnu.org/cgit/config.git/plain/${pkgname}"
 dest="${PREFIX}/bin/${pkgname}"
-
+patchname="${pkgname}.patch"
+patchsrc="https://raw.githubusercontent.com/aburkivskyi/termux_${pkgname}/main/${patchname}"
 makedepends=(
 	'curl'
 )
@@ -36,7 +37,10 @@ get_pkg() {
 patch_pkg() {
 	printf 'Patching...'
 	cd "${SCRIPT_DIR}" || return 1
-	patch -u "${dest}" -i "${pkgname}.patch"
+	if [[ ! -f "${patchname}" ]]; then
+		curl -fsSOL "${patchsrc}"
+	fi
+	patch -u "${dest}" -i "${patchname}"
 	printf 'Done!\n'
 }
 
