@@ -3,19 +3,12 @@ Script to install 'config.guess' in Termux
 
 ## Installing
 
-### Normal
 
 Run in **Termux**:
 
 ```bash
-curl -fsSOL https://raw.githubusercontent.com/aburkivskyi/termux_config.guess/main/install
+git clone https://github.com/aburkivskyi/termux_config.guess
+cd termux_config.guess
 chmod +x install
 ./install
-```
-### Quick
-
-Run in **Termux**:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/aburkivskyi/termux_config.guess/main/install | bash
 ```
