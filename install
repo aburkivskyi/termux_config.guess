@@ -1,0 +1,69 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# vim: set ft=bash:
+set -euo pipefail
+
+PREFIX="${PREFIX:-"/data/data/com.termux/files/usr"}"
+SCRIPT_DIR="$(cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P)"
+
+pkgname='config.guess'
+pkgsrc="https://git.savannah.gnu.org/cgit/config.git/plain/${pkgname}"
+dest="${PREFIX}/bin/${pkgname}"
+
+makedepends=(
+	'curl'
+)
+
+install_makedepends() {
+	printf 'Update... '
+	apt-get update >/dev/null 2>&1
+	printf 'Done!\n'
+	printf 'Upgrade... '
+	apt-get -y upgrade >/dev/null 2>&1
+	printf 'Done!\n'
+	for PKG in ${makedepends[@]}; do
+		printf 'Installing %s... ' "${PKG}"
+		apt-get -y install "${PKG}" >/dev/null 2>&1
+		printf 'Done!\n'
+	done
+}
+
+get_pkg() {
+	printf 'Downloading source... '
+	curl -fsSL "${pkgsrc}" -o "${dest}"
+	printf 'Done!\n'
+}
+
+patch_pkg() {
+	printf 'Patching...'
+	cd "${SCRIPT_DIR}" || return 1
+	patch -u "${dest}" -i "${pkgname}.patch"
+	printf 'Done!\n'
+}
+
+make_exec() {
+	printf 'Fixing exec... '
+	chmod a+x "${dest}"
+	printf 'Done!\n'
+}
+
+check_installed () {
+	printf 'Checking install... '
+	if [[ -x "${dest}" ]]; then
+		if command -v "${pkgname}" &>/dev/null; then
+			printf 'Done!\n'
+			return 0
+		else
+			return 1
+		fi
+	else
+		return 1
+	fi
+}
+
+install_makedepends
+get_pkg
+patch_pkg
+make_exec
+check_installed
+printf '\nFinish!\n'
+exit 0

@@ -1,0 +1,17 @@
+--- config.guess.orig	2021-08-06 23:48:04.480000000 +0200
++++ config.guess	2021-08-06 23:55:00.560000000 +0200
+@@ -1,4 +1,4 @@
+-#! /bin/sh
++#!/data/data/com.termux/files/usr/bin/sh
+ # Attempt to guess a canonical system name.
+ #   Copyright 1992-2021 Free Software Foundation, Inc.
+ 
+@@ -114,7 +114,7 @@
+ set_cc_for_build() {
+     # prevent multiple calls if $tmp is already set
+     test "$tmp" && return 0
+-    : "${TMPDIR=/tmp}"
++    : "${TMPDIR=${PREFIX}/tmp}"
+     # shellcheck disable=SC2039,SC3028
+     { tmp=`(umask 077 && mktemp -d "$TMPDIR/cgXXXXXX") 2>/dev/null` && test -n "$tmp" && test -d "$tmp" ; } ||
+ 	{ test -n "$RANDOM" && tmp=$TMPDIR/cg$$-$RANDOM && (umask 077 && mkdir "$tmp" 2>/dev/null) ; } ||
